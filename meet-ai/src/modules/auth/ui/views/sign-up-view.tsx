@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 
 const formSchema = z
@@ -55,6 +56,7 @@ export default function SignUpView() {
         name: data.name,
         email: data.email,
         password: data.password,
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -68,6 +70,24 @@ export default function SignUpView() {
       }
     );
   });
+
+  const onSocial = (provider: "github" | "google") => {
+    setError(null);
+    setPending(true);
+
+    authClient.signIn.social(
+      { provider, callbackURL: "/" },
+      {
+        onSuccess: () => {
+          setPending(false);
+        },
+        onError: ({ error }) => {
+          setPending(false);
+          setError(error.message);
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -178,16 +198,18 @@ export default function SignUpView() {
                     type="button"
                     className="w-full"
                     disabled={pending}
+                    onClick={() => onSocial("google")}
                   >
-                    Google
+                    <FaGoogle />
                   </Button>
                   <Button
                     variant="outline"
                     type="button"
                     className="w-full"
                     disabled={pending}
+                    onClick={() => onSocial("github")}
                   >
-                    Github
+                    <FaGithub />
                   </Button>
                 </div>
                 <div className="text-center text-sm">
