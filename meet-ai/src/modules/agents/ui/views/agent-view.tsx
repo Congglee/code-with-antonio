@@ -9,8 +9,10 @@ import DataPagination from "@/modules/agents/ui/components/data-pagination";
 import DataTable from "@/modules/agents/ui/components/data-table";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function AgentsView() {
+  const router = useRouter();
   const [filters, setFilters] = useAgentsFilters();
 
   const trpc = useTRPC();
@@ -20,7 +22,11 @@ export default function AgentsView() {
 
   return (
     <div className="flex flex-col flex-1 px-4 pb-4 md:px-8 gap-y-4">
-      <DataTable data={data.items} columns={columns} />
+      <DataTable
+        data={data.items}
+        columns={columns}
+        onRowClick={(row) => router.push(`/agents/${row.id}`)}
+      />
       <DataPagination
         page={filters.page}
         totalPages={data.totalPages}
