@@ -5,19 +5,20 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import DashboardTrial from "@/modules/dashboard/ui/components/dashboard-trial";
+import DashboardUserButton from "@/modules/dashboard/ui/components/dashboard-user-button";
+import { BotIcon, StarIcon, VideoIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { BotIcon, VideoIcon, StarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import DashboardUserButton from "@/modules/dashboard/ui/components/dashboard-user-button";
 
 const firstSection = [
   {
@@ -112,6 +113,7 @@ export default function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="text-white">
+        <DashboardTrial />
         <DashboardUserButton />
       </SidebarFooter>
     </Sidebar>
