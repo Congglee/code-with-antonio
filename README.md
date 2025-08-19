@@ -1,10 +1,77 @@
 # Code with Antonio - Tutorial Projects Collection
 
-This repository contains three full-stack web applications built following tutorials from the [Code with Antonio YouTube channel](https://www.youtube.com/@codewithantonio). Each project demonstrates modern web development practices using Next.js 14, TypeScript, and various cutting-edge technologies.
+This repository contains four full-stack web applications built following tutorials from the [Code with Antonio YouTube channel](https://www.youtube.com/@codewithantonio). Each project demonstrates modern web development practices using Next.js 14/15, TypeScript, and various cutting-edge technologies.
 
 ## 🚀 Projects Overview
 
-### 1. Finance SaaS Platform 💰
+### 1. Meet AI 🤖
+
+**Location:** `meet-ai/`
+
+An AI-powered video calling SaaS where real-time agents join your call, generate summaries and transcripts, store recordings, and enable post-call Q&A with meeting-aware chat.
+
+#### ✨ Features
+
+- **AI-powered Calls**: Real-time AI agents in meetings
+- **Custom Agents**: Role-specific instructions and behaviors
+- **Summaries & Transcripts**: Background processing and storage
+- **Recordings**: Call recording playback
+- **Transcript Search**: Highlighted search across the entire call
+- **Meeting History & Statuses**: Upcoming, processing, completed
+- **Post-call Q&A**: Chat that understands the meeting context
+- **Subscriptions**: Free trial limits and upgrade flow
+- **Responsive UI**: Optimized for mobile and desktop
+
+#### 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 (App Router) + React 19
+- **Auth**: Better Auth (@polar-sh/better-auth)
+- **Payments**: Polar
+- **Database**: Neon Postgres + Drizzle ORM
+- **Realtime**: Stream Video SDK + Stream Chat SDK
+- **Background Jobs**: Inngest
+- **Full-stack Types**: tRPC + TanStack Query
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Utilities**: Zod, date-fns, lucide-react, react-markdown, humanize-duration, Recharts
+
+#### 🚀 Quick Start
+
+```bash
+cd meet-ai
+npm install
+
+# 1) Configure environment variables in .env
+# Database
+DATABASE_URL="postgres://user:password@host:port/db"
+
+# Social auth (optional)
+GITHUB_CLIENT_ID="..."
+GITHUB_CLIENT_SECRET="..."
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+
+# Polar (payments)
+POLAR_ACCESS_TOKEN="..." # sandbox token for local dev
+
+# Stream (video & chat)
+NEXT_PUBLIC_STREAM_VIDEO_API_KEY="..."
+STREAM_VIDEO_SECRET_KEY="..."
+NEXT_PUBLIC_STREAM_CHAT_API_KEY="..."
+STREAM_CHAT_API_SECRET="..."
+
+# 2) Push database schema
+npm run db:push
+
+# 3) Run the app
+npm run dev
+
+# (Optional) Expose webhook locally
+npm run dev:webhook
+```
+
+---
+
+### 2. Finance SaaS Platform 💰
 
 **Location:** `finance-saas-platform/`
 
@@ -46,7 +113,7 @@ npm run dev
 
 ---
 
-### 2. Jira Clone 📋
+### 3. Jira Clone 📋
 
 **Location:** `jira-clone/`
 
@@ -87,7 +154,7 @@ npm run dev
 
 ---
 
-### 3. NextAuth v5 Tutorial 🔐
+### 4. NextAuth v5 Tutorial 🔐
 
 **Location:** `next-auth-v5/`
 
