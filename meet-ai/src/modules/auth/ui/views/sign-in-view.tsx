@@ -23,7 +23,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 
 const formSchema = z.object({
-  email: z.email(),
+  email: z.string().email(),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
@@ -81,7 +81,7 @@ export default function SignInView() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Card className="overflow-hidden p-0">
+      <Card className="p-0 overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <Form {...form}>
             <form className="p-6 md:p-8" onSubmit={onSubmit}>
@@ -131,7 +131,7 @@ export default function SignInView() {
                   />
                 </div>
                 {!!error && (
-                  <Alert className="bg-destructive/10 border-none">
+                  <Alert className="border-none bg-destructive/10">
                     <OctagonAlertIcon className="w-4 h-4 !text-destructive" />
                     <AlertTitle>{error}</AlertTitle>
                   </Alert>
@@ -139,8 +139,8 @@ export default function SignInView() {
                 <Button type="submit" className="w-full" disabled={pending}>
                   Sign in
                 </Button>
-                <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                  <span className="bg-card text-muted-foreground relative z-10">
+                <div className="relative text-sm text-center after:border-border after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+                  <span className="relative z-10 bg-card text-muted-foreground">
                     Or continue with
                   </span>
                 </div>
@@ -164,7 +164,7 @@ export default function SignInView() {
                     <FaGithub />
                   </Button>
                 </div>
-                <div className="text-center text-sm">
+                <div className="text-sm text-center">
                   Don&apos;t have an account?{" "}
                   <Link
                     href="/sign-up"
@@ -177,7 +177,7 @@ export default function SignInView() {
             </form>
           </Form>
 
-          <div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
+          <div className="relative flex-col items-center justify-center hidden bg-radial from-sidebar-accent to-sidebar md:flex gap-y-4">
             <img
               src="/logo.svg"
               alt="Image"
