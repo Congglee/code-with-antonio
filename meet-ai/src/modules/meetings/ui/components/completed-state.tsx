@@ -4,6 +4,8 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDuration } from "@/lib/utils";
 import { MeetingGetOne } from "@/modules/meetings/types";
+import ChatProvider from "@/modules/meetings/ui/components/chat-provider";
+import Transcript from "@/modules/meetings/ui/components/transcript";
 import { format } from "date-fns";
 import {
   BookOpenTextIcon,
@@ -147,6 +149,12 @@ export default function CompletedState({ data }: CompletedStateProps) {
               </div>
             </div>
           </div>
+        </TabsContent>
+        <TabsContent value="transcript">
+          <Transcript meetingId={data.id} />
+        </TabsContent>
+        <TabsContent value="chat">
+          <ChatProvider meetingId={data.id} meetingName={data.name} />
         </TabsContent>
       </Tabs>
     </div>
