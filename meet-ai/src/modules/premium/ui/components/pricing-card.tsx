@@ -2,8 +2,8 @@ import { CircleCheckIcon } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 const pricingCardVariants = cva("rounded-lg p-4 py-6 w-full", {
   variants: {

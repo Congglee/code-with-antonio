@@ -5,7 +5,7 @@ import {
   MIN_PAGE_SIZE,
 } from "@/constants";
 import { db } from "@/db";
-import { agents } from "@/db/schema";
+import { agents, meetings } from "@/db/schema";
 import {
   agentsInsertSchema,
   agentsUpdateSchema,
@@ -22,11 +22,11 @@ import { z } from "zod";
 export const agentsRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ input, ctx }) => {
+    .query(async ({ ctx, input }) => {
       const [existingAgent] = await db
         .select({
-          meetingCount: sql<number>`5`,
           ...getTableColumns(agents),
+          meetingCount: db.$count(meetings, eq(meetings.agentId, agents.id)),
         })
         .from(agents)
         .where(
@@ -34,7 +34,10 @@ export const agentsRouter = createTRPCRouter({
         );
 
       if (!existingAgent) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Agent not found" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Agent not found`,
+        });
       }
 
       return existingAgent;

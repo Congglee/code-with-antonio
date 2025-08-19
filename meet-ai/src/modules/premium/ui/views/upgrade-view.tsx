@@ -34,10 +34,12 @@ export default function UpgradeView() {
             const isPremium = !!currentSubscription;
 
             let buttonText = "Upgrade";
+
             let onClick = () =>
               authClient.checkout({
                 products: [product.id],
               });
+
             if (isCurrentProduct) {
               buttonText = "Manage";
               onClick = () => authClient.customer.portal();

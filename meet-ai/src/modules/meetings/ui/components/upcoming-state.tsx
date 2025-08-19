@@ -1,40 +1,22 @@
 import EmptyState from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
-import { BanIcon } from "lucide-react";
-import Link from "next/link";
 import { VideoIcon } from "lucide-react";
+import Link from "next/link";
 
 interface UpcomingStateProps {
   meetingId: string;
-  onCancelMeeting: () => void;
-  isCancelling: boolean;
 }
 
-export default function UpcomingState({
-  meetingId,
-  onCancelMeeting,
-  isCancelling,
-}: UpcomingStateProps) {
+export default function UpcomingState({ meetingId }: UpcomingStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-5 bg-white rounded-lg gap-y-8">
+    <div className="flex flex-col bg-white rounded-lg px-4 py-5 gap-y-8 items-center justify-center">
       <EmptyState
         image="/upcoming.svg"
-        title="Not Started yet"
-        description="This meeting is scheduled for a future date and time. Please check back later."
+        title="Not started yet"
+        description="Once you start this meeting, a summary will be generated here."
       />
-
-      <div className="flex flex-col-reverse items-center w-full gap-2 lg:flex-row lg:justify-center">
-        <Button
-          variant="secondary"
-          className="w-full lg:w-auto"
-          onClick={onCancelMeeting}
-          disabled={isCancelling}
-        >
-          <BanIcon />
-          Cancel Meeting
-        </Button>
-
-        <Button asChild className="w-full lg:w-auto" disabled={isCancelling}>
+      <div className="flex flex-col-reverse lg:flex-row lg:justify-center items-center gap-2 w-full">
+        <Button asChild className="w-full lg:w-auto">
           <Link href={`/call/${meetingId}`}>
             <VideoIcon />
             Start Meeting

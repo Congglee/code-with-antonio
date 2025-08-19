@@ -6,9 +6,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 interface CallMeetingPageProps {
-  params: {
+  params: Promise<{
     meetingId: string;
-  };
+  }>;
 }
 
 export default async function CallMeetingPage({
