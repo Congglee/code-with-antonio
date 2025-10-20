@@ -13,14 +13,6 @@ export default function OverviewProperty({
         <p className="text-sm text-muted-foreground">{label}</p>
       </div>
       <div className="flex items-center gap-x-2">{children}</div>
-      {/* <div className="">
-        <p className="text-sm text-muted-foreground">
-          {label}
-        </p>
-        <div className="flex items-center gap-x-2">
-          {children}
-        </div>
-      </div> */}
     </div>
   );
 }

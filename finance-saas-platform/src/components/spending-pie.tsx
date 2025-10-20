@@ -25,7 +25,6 @@ export default function SpendingPie({ data = [] }: SpendingPieProps) {
 
   const onTypeChange = (type: string) => {
     // TODO: Add paywall
-
     setChartType(type);
   };
 

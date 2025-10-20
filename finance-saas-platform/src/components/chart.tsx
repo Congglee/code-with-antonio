@@ -32,7 +32,6 @@ export default function Chart({ data = [] }: ChartProps) {
 
   const onTypeChange = (type: string) => {
     // TODO: Add paywall
-
     setChartType(type);
   };
 
