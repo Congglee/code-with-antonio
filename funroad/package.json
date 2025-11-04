@@ -1,5 +1,5 @@
 {
-  "name": "fun-road",
+  "name": "funroad",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -53,6 +53,7 @@
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
+    "tw-animate-css": "^1.2.5",
     "vaul": "^1.1.2",
     "zod": "^4.1.12"
   },
