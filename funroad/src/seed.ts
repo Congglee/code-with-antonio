@@ -1,5 +1,6 @@
 import { getPayload } from "payload";
 import config from "@/payload.config";
+import "dotenv/config";
 
 const categories = [
   {
@@ -137,10 +138,140 @@ const categories = [
   },
 ];
 
+const tenants = [
+  {
+    name: "CodeCraft Studio",
+    slug: "codecraft-studio",
+    stripeAccountId: "acct_seed_codecraft",
+  },
+  {
+    name: "Pixel Forge",
+    slug: "pixel-forge",
+    stripeAccountId: "acct_seed_pixelforge",
+  },
+  {
+    name: "Growth Sprint",
+    slug: "growth-sprint",
+    stripeAccountId: "acct_seed_growthsprint",
+  },
+];
+
+const tags = [
+  "Course",
+  "Template",
+  "Notion",
+  "Figma",
+  "Bundle",
+  "Marketing",
+  "Productivity",
+  "Design",
+  "Photography",
+  "Audio",
+];
+
+const products = [
+  {
+    name: "Next.js SaaS Starter Kit",
+    price: 89,
+    categorySlug: "web-development",
+    tenantSlug: "codecraft-studio",
+    tags: ["Course", "Template", "Bundle"],
+    refundPolicy: "14-days",
+  },
+  {
+    name: "TypeScript API Architecture Playbook",
+    price: 59,
+    categorySlug: "programming-languages",
+    tenantSlug: "codecraft-studio",
+    tags: ["Course", "Productivity"],
+    refundPolicy: "30-days",
+  },
+  {
+    name: "Fullstack DevOps Deployment Guide",
+    price: 75,
+    categorySlug: "devops",
+    tenantSlug: "codecraft-studio",
+    tags: ["Course", "Bundle"],
+    refundPolicy: "14-days",
+  },
+  {
+    name: "Figma UI Kit for Marketplace Apps",
+    price: 42,
+    categorySlug: "ui-ux",
+    tenantSlug: "pixel-forge",
+    tags: ["Figma", "Design", "Template"],
+    refundPolicy: "7-days",
+  },
+  {
+    name: "Design System Starter for React",
+    price: 65,
+    categorySlug: "graphic-design",
+    tenantSlug: "pixel-forge",
+    tags: ["Template", "Design", "Bundle"],
+    refundPolicy: "14-days",
+  },
+  {
+    name: "Typography Pairing Handbook",
+    price: 29,
+    categorySlug: "typography",
+    tenantSlug: "pixel-forge",
+    tags: ["Design", "Course"],
+    refundPolicy: "7-days",
+  },
+  {
+    name: "Notion Creator Business OS",
+    price: 39,
+    categorySlug: "productivity",
+    tenantSlug: "growth-sprint",
+    tags: ["Notion", "Productivity", "Template"],
+    refundPolicy: "30-days",
+  },
+  {
+    name: "Launch Strategy for Digital Products",
+    price: 54,
+    categorySlug: "marketing-sales",
+    tenantSlug: "growth-sprint",
+    tags: ["Marketing", "Course"],
+    refundPolicy: "14-days",
+  },
+  {
+    name: "Personal Finance Spreadsheet Pack",
+    price: 33,
+    categorySlug: "personal-finance",
+    tenantSlug: "growth-sprint",
+    tags: ["Template", "Productivity"],
+    refundPolicy: "30-days",
+  },
+  {
+    name: "Portrait Photography Preset Collection",
+    price: 27,
+    categorySlug: "portrait",
+    tenantSlug: "pixel-forge",
+    tags: ["Photography", "Bundle"],
+    refundPolicy: "7-days",
+  },
+  {
+    name: "Music Production Workflow Templates",
+    price: 36,
+    categorySlug: "music-production",
+    tenantSlug: "codecraft-studio",
+    tags: ["Audio", "Template"],
+    refundPolicy: "14-days",
+  },
+  {
+    name: "Creator Growth Metrics Dashboard",
+    price: 49,
+    categorySlug: "entrepreneurship",
+    tenantSlug: "growth-sprint",
+    tags: ["Notion", "Marketing", "Template"],
+    refundPolicy: "14-days",
+  },
+] as const;
+
 const seed = async () => {
   const payload = await getPayload({ config });
 
-  await payload.create({
+  const adminUser = await payload.create({
     collection: "users",
     data: {
       email: "admin@demo.com",
@@ -171,6 +302,96 @@ const seed = async () => {
         },
       });
     }
+  }
+
+  const createdTenants = await Promise.all(
+    tenants.map((tenant) =>
+      payload.create({
+        collection: "tenants",
+        data: {
+          name: tenant.name,
+          slug: tenant.slug,
+          stripeAccountId: tenant.stripeAccountId,
+          stripeDetailsSubmitted: true,
+        },
+      }),
+    ),
+  );
+
+  const tenantMap = new Map(createdTenants.map((tenant) => [tenant.slug, tenant.id]));
+
+  const createdTags = await Promise.all(
+    tags.map((tag) =>
+      payload.create({
+        collection: "tags",
+        data: {
+          name: tag,
+        },
+      }),
+    ),
+  );
+
+  const tagMap = new Map(createdTags.map((tag) => [tag.name, tag.id]));
+
+  const categorySlugs = [...new Set(products.map((product) => product.categorySlug))];
+  const categoriesData = await payload.find({
+    collection: "categories",
+    depth: 0,
+    limit: categorySlugs.length,
+    pagination: false,
+    where: {
+      slug: {
+        in: categorySlugs,
+      },
+    },
+  });
+
+  const categoryMap = new Map(
+    categoriesData.docs.map((category) => [category.slug, category.id]),
+  );
+
+  for (const product of products) {
+    const tenantId = tenantMap.get(product.tenantSlug);
+    const categoryId = categoryMap.get(product.categorySlug);
+
+    if (!tenantId || !categoryId) {
+      continue;
+    }
+
+    await payload.create({
+      collection: "products",
+      data: {
+        name: product.name,
+        price: product.price,
+        tenant: tenantId,
+        category: categoryId,
+        tags: product.tags
+          .map((tag) => tagMap.get(tag))
+          .filter((tag): tag is string => Boolean(tag)),
+        refundPolicy: product.refundPolicy,
+        isArchived: false,
+        isPrivate: false,
+      },
+    });
+  }
+
+  const seededProducts = await payload.find({
+    collection: "products",
+    depth: 0,
+    limit: 6,
+    sort: "-createdAt",
+  });
+
+  for (const product of seededProducts.docs) {
+    await payload.create({
+      collection: "reviews",
+      data: {
+        description: `Great value product for ${product.name}`,
+        rating: Math.floor(Math.random() * 2) + 4,
+        product: product.id,
+        user: adminUser.id,
+      },
+    });
   }
 };
 

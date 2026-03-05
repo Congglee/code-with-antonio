@@ -5,13 +5,31 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import type { Stripe } from "stripe";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   let event: Stripe.Event;
+  const signature = req.headers.get("stripe-signature");
+  const payload = await req.text();
+
+  if (!signature) {
+    return NextResponse.json(
+      { message: "Missing stripe-signature header" },
+      { status: 400 },
+    );
+  }
+
+  if (!payload) {
+    return NextResponse.json(
+      { message: "No webhook payload was provided." },
+      { status: 400 },
+    );
+  }
 
   try {
     event = stripe.webhooks.constructEvent(
-      await (await req.blob()).text(),
-      req.headers.get("stripe-signature") as string,
+      payload,
+      signature,
       process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (error) {
@@ -37,10 +55,9 @@ export async function POST(req: Request) {
     "account.updated",
   ];
 
-  const payload = await getPayload({ config });
-
   if (permittedEvents.includes(event.type)) {
     let data;
+    const payloadClient = await getPayload({ config });
 
     try {
       switch (event.type) {
@@ -48,10 +65,13 @@ export async function POST(req: Request) {
           data = event.data.object as Stripe.Checkout.Session;
 
           if (!data.metadata?.userId) {
-            throw new Error("User ID is required");
+            console.log(
+              "⚠️ checkout.session.completed received without metadata.userId, skipping",
+            );
+            break;
           }
 
-          const user = await payload.findByID({
+          const user = await payloadClient.findByID({
             collection: "users",
             id: data.metadata.userId,
           });
@@ -81,7 +101,7 @@ export async function POST(req: Request) {
             .data as ExpandedLineItem[];
 
           for (const item of lineItems) {
-            await payload.create({
+            await payloadClient.create({
               collection: "orders",
               data: {
                 stripeCheckoutSessionId: data.id,
@@ -96,7 +116,7 @@ export async function POST(req: Request) {
         case "account.updated":
           data = event.data.object as Stripe.Account;
 
-          await payload.update({
+          await payloadClient.update({
             collection: "tenants",
             where: {
               stripeAccountId: {

@@ -1,5 +1,5 @@
 import Navbar from "@/modules/checkout/ui/components/navbar";
-import { Footer } from "@/modules/tenants/ui/components/footer";
+import Footer from "@/modules/tenants/ui/components/footer";
 
 interface CheckoutLayoutProps {
   children: React.ReactNode;
